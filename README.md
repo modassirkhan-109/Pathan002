@@ -1,6 +1,21 @@
 # Pathan002
 World changing9
 
+{
+  "name": "use-ai",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0",
+    "openai": "^5.12.2",
+    "dotenv": "^16.6.1"
+  }
+}
+
 import "dotenv/config";
 import express from "express";
 import OpenAI from "openai";
@@ -74,3 +89,45 @@ app.post("/api/ask", async (req, res) => {
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`USE AI server running on port ${PORT}`);
 });
+
+<script>
+const form = document.getElementById("form");
+const questionInput = document.getElementById("question");
+const answerBox = document.getElementById("answer");
+const askButton = form.querySelector('button[type="submit"]');
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+
+  const question = questionInput.value.trim();
+  if (!question) return;
+
+  askButton.disabled = true;
+  answerBox.textContent = "USE AI is thinking...";
+
+  try {
+    const response = await fetch("/api/ask", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ question })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Request failed");
+    }
+
+    answerBox.textContent = data.answer;
+  } catch (error) {
+    answerBox.textContent =
+      "Sorry! AI se connection nahi ho paya.\n" +
+      error.message +
+      "\nPlease check your internet and server settings.";
+  } finally {
+    askButton.disabled = false;
+  }
+});
+</script>
